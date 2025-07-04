@@ -1,45 +1,47 @@
 import java.util.*;
 class Solution {
-    
-    class Word {
-        String word;
-        int depth;
-        
-        Word(String word, int depth) {
-            this.word = word;
-            this.depth = depth;
-        }
-    }
-    
     public int solution(String begin, String target, String[] words) {
-        boolean[] visit = new boolean[words.length];
-        Queue<Word> queue = new LinkedList<>();
+        boolean exists = false;
         
-        queue.offer(new Word(begin, 0));
+        for(String word : words) {
+            if(word.equals(target)) {
+                exists = true;
+                break;
+            }
+        }
+        
+        if(!exists) return 0;
+        
+        Queue<String> queue = new LinkedList<>();
+        Map<String, Integer> steps = new HashMap<>();
+        
+        queue.offer(begin);
+        steps.put(begin, 0);
         
         while(!queue.isEmpty()) {
-            Word current = queue.poll();
+            String current = queue.poll();
+            int currentSteps = steps.get(current);
             
-            if(current.word.equals(target)) {
-                return current.depth;
-            }
+            if(current.equals(target)) return currentSteps;
             
-            for(int i = 0; i < words.length; i++) {
-                if(!visit[i] && isOneDiff(current.word, words[i])) {
-                    visit[i] = true;
-                    queue.offer(new Word(words[i], current.depth + 1));
+            for(String word : words) {
+                if(!steps.containsKey(word) && isOneDiff(current, word)) {
+                    queue.offer(word);
+                    steps.put(word, currentSteps + 1);
                 }
             }
         }
-        return 0;
+        
+        return 0;   
     }
     
-    private boolean isOneDiff(String a, String b) {
-        int diff = 0;
-        for(int i = 0; i < a.length(); i++) {
-            if(a.charAt(i) != b.charAt(i)) diff++;
+    private boolean isOneDiff(String current, String word) {
+        int diffCount = 0;
+        for(int i = 0; i < current.length(); i++) {
+            if(current.charAt(i) != word.charAt(i)) {
+                diffCount++;
+            }
         }
-        
-        return diff == 1;
+        return diffCount == 1;
     }
 }
