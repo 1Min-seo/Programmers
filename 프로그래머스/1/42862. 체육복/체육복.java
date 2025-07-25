@@ -1,45 +1,27 @@
 import java.util.*;
 class Solution {
     public int solution(int n, int[] lost, int[] reserve) {
-        boolean[] has = new boolean[n + 1];
-        int cnt = 0;
-        
-        for(int i = 0; i <= n; i++) {
-            has[i] = true;
-        }
-        
         Set<Integer> lostSet = new HashSet<>();
         Set<Integer> reserveSet = new HashSet<>();
         
-        for(int l : lost) {
-            lostSet.add(l);
-        }
+        for(int l : lost) lostSet.add(l);
+        for(int r : reserve) reserveSet.add(r);
         
-        for(int r : reserve) {
-            if(lostSet.contains(r)) {
-                lostSet.remove(r);
-            }else {
-                reserveSet.add(r);
+        //도난도 당하고 여벌도 있는
+        Set<Integer> intersect = new HashSet<>(lostSet);
+        intersect.retainAll(reserveSet);
+        lostSet.removeAll(intersect);
+        reserveSet.removeAll(intersect);
+        
+        for(int  r : reserveSet) {
+            if(lostSet.contains(r - 1)) {
+                lostSet.remove(r - 1);
+            }else if(lostSet.contains(r + 1)) {
+                lostSet.remove(r + 1);
             }
         }
         
-        for(int l : lostSet) {
-            has[l] = false;
-        }
-        
-        for(int r : reserveSet) {
-            if(r - 1 > 0 && !has[r - 1]) {
-                has[r - 1] = true;
-            }else if (r + 1 <= n && !has[r + 1]) {
-                has[r + 1] = true;
-            }
-        }
-        
-        for(int i = 1; i <= n; i++) {
-            if(has[i] == true) cnt++;
-        }
-        
-        return cnt;
+        return n - lostSet.size();
         
     }
 }
