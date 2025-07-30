@@ -1,47 +1,37 @@
 import java.util.*;
 class Solution {
-    public int solution(String begin, String target, String[] words) {
-        boolean exists = false;
+    public int solution(String begin, String target, String[] words){
+        Deque<String[]> dq = new ArrayDeque<>();
+        boolean[] visited = new boolean[words.length];
+        dq.addLast(new String[]{begin, "0"});
         
-        for(String word : words) {
+        while(!dq.isEmpty()) {
+            String[] current = dq.removeFirst();
+            String word = current[0];
+            int count = Integer.parseInt(current[1]);
+            
             if(word.equals(target)) {
-                exists = true;
-                break;
+                return count;
             }
+            
+            for(int i = 0; i < words.length; i++) {
+                if(!visited[i] && isOneDiff(word, words[i])) {
+                    visited[i] = true;
+                    dq.addLast(new String[] {words[i], String.valueOf(count + 1)});        
+            }  
         }
+    }
+        return 0;
+}
         
-        if(!exists) return 0;
-        
-        Queue<String> queue = new LinkedList<>();
-        Map<String, Integer> steps = new HashMap<>();
-        
-        queue.offer(begin);
-        steps.put(begin, 0);
-        
-        while(!queue.isEmpty()) {
-            String current = queue.poll();
-            int currentSteps = steps.get(current);
-            
-            if(current.equals(target)) return currentSteps;
-            
-            for(String word : words) {
-                if(!steps.containsKey(word) && isOneDiff(current, word)) {
-                    queue.offer(word);
-                    steps.put(word, currentSteps + 1);
+    private boolean isOneDiff(String word, String target) {
+            int diff = 0;
+            for(int i = 0; i < word.length(); i++) {
+                if(word.charAt(i) != target.charAt(i)) {
+                    diff++;
                 }
             }
-        }
-        
-        return 0;   
-    }
-    
-    private boolean isOneDiff(String current, String word) {
-        int diffCount = 0;
-        for(int i = 0; i < current.length(); i++) {
-            if(current.charAt(i) != word.charAt(i)) {
-                diffCount++;
-            }
-        }
-        return diffCount == 1;
+            
+            return diff == 1 ? true : false;
     }
 }
