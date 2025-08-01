@@ -1,28 +1,31 @@
 import java.util.*;
 class Solution {
-    Map<String, PriorityQueue<String>> graph = new HashMap<>();
-    List<String> route = new ArrayList<>();
+    private List<String> path = new ArrayList<>();
+    private int n;
+    private boolean[] visited;
     public String[] solution(String[][] tickets) {
-        for(String[] ticket : tickets) {
-            graph.putIfAbsent(ticket[0], new PriorityQueue<>());
-            graph.get(ticket[0]).add(ticket[1]);
-        }
-        dfs("ICN");
+        n = tickets.length;
+        visited = new boolean[n];
         
-        return route.toArray(new String[0]);
+        Arrays.sort(tickets, (a, b) -> a[1].compareTo(b[1]));
+        
+        dfs("ICN", "ICN", 0, tickets);
+        
+        return path.get(0).split(" ");
     }
     
-    private void dfs(String airport) {
-        while(!graph.getOrDefault(airport, new PriorityQueue<>()).isEmpty()) {
-            String next = graph.get(airport).poll();
-            dfs(next);
+    private void dfs(String start, String route, int count, String[][] tickets) {
+        if(count == n) {
+            path.add(route);
+            return;
         }
-        route.add(0, airport);
+        
+        for(int i = 0; i < n; i++) {
+            if(!visited[i] && start.equals(tickets[i][0])) {
+                visited[i] = true;
+                dfs(tickets[i][1], route + " " + tickets[i][1], count + 1, tickets);
+                visited[i] = false;
+            }
+        }
     }
-    
-    
 }
-
-// ICN      ATL, SFO
-// SFO      ATL
-// ATL      ICN, SFO
