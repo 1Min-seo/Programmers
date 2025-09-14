@@ -1,17 +1,22 @@
-import java.util.*;
 class Solution {
     public int[] solution(String s) {
-        int zeroCnt = 0;
-        int cnt = 0;
-        while(!s.equals("1")) {
-            String removeZero = s.replace("0", "");
-            zeroCnt += s.length() - removeZero.length();
-           
-            int sLen = removeZero.length();
-            s = Integer.toString(sLen, 2);
-            cnt++;
-        }
+        int zeroCount = 0;
+        int countTrans = 0;
         
-        return new int[]{cnt, zeroCnt};
+        while(!s.equals("1")) {
+            StringBuilder sb = new StringBuilder();
+            
+            for(char c : s.toCharArray()) {
+                if(c == '1') {
+                    sb.append('1');
+                }else zeroCount++;
+            }
+            
+            s = Integer.toBinaryString(sb.length());
+            countTrans++;
+            
+        } 
+                
+        return new int[]{countTrans, zeroCount};
     }
 }
