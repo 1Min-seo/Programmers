@@ -1,26 +1,27 @@
+import java.util.*;
 class Solution {
     public int solution(int[][] sizes) {
+        int width = 0;
+        int height = 0;
+        
         for(int i = 0; i < sizes.length; i++) {
-            if(sizes[i][0] < sizes[i][1]) {
-                int tmp = sizes[i][1];
-                sizes[i][1] = sizes[i][0];
-                sizes[i][0] = tmp;
+            if(sizes[i][0] < sizes[i][1]) { // 가로를 크게 정렬
+                int tmp = sizes[i][0];
+                sizes[i][0] = sizes[i][1];
+                sizes[i][1] = tmp;
             }
-        }
-        
-        int width = Integer.MIN_VALUE;
-        int height = Integer.MIN_VALUE;
-        
-        for(int[] size : sizes) {
-            if(size[0] > width) {
-                width = size[0];
-            }
-            if(size[1] > height) {
-                height = size[1];
-            }
+            width = Math.max(width, sizes[i][0]);
+            height = Math.max(height, sizes[i][1]);
+            System.out.println("width: " + width + ", height: " + height);
         }
         
         return width * height;
-        
     }
 }
+
+/**
+60 50
+70 30
+60 30
+80 40
+*/
